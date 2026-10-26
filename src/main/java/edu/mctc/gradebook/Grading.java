@@ -156,4 +156,23 @@ public final class Grading {
         }
         return Math.round(total * 100.0) / 100.0;
     }
+    public static double gpa(List<String> letters, List<Integer> credits) {
+        if(letters.isEmpty() || letters.size() != credits.size()) {
+            throw new IllegalArgumentException("letters and credits must be non-empty and equal in size");
+        }
+
+        int totalCredits = 0;
+        double weightedPoints = 0.0;
+
+        for (int i = 0; i < letters.size(); i ++) {
+            totalCredits += credits.get(i);
+            weightedPoints += gradePoints(letters.get(i)) * credits.get(i);
+        }
+
+        if (totalCredits == 0) {
+            throw new IllegalArgumentException("total credits must be greater than zero");
+        }
+
+        return weightedPoints / totalCredits;
+    }
 }
