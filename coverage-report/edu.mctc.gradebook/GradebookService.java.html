@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GradebookService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gradebook</a> &gt; <a href="index.source.html" class="el_package">edu.mctc.gradebook</a> &gt; <span class="el_source">GradebookService.java</span></div><h1>GradebookService.java</h1><pre class="source lang-java linenums">package edu.mctc.gradebook;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+
+/**
+ * Application service that ties the loader, repository and grading rules together.
+ *
+ * Its dependencies are passed in through the constructor (dependency injection),
+ * which makes it straightforward to substitute mocks or fakes in tests.
+ */
+public class GradebookService {
+
+    /** A student's final result. */
+<span class="nc" id="L20">    public record FinalGrade(String studentId, String name, double percent, String letter) {</span>
+    }
+
+    private final StudentRepository repository;
+    private final RosterLoader loader;
+
+<span class="nc" id="L26">    public GradebookService(StudentRepository repository, RosterLoader loader) {</span>
+<span class="nc" id="L27">        this.repository = repository;</span>
+<span class="nc" id="L28">        this.loader = loader;</span>
+<span class="nc" id="L29">    }</span>
+
+    /** Load a roster CSV into the repository. Returns the number of scores imported. */
+    public int importRoster(Path path) throws IOException, SQLException {
+<span class="nc" id="L33">        List&lt;RosterLoader.ScoreRecord&gt; records = loader.load(path);</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">        for (RosterLoader.ScoreRecord r : records) {</span>
+<span class="nc" id="L35">            repository.addStudent(r.studentId(), r.name());</span>
+<span class="nc" id="L36">            repository.addScore(r.studentId(), r.category(), r.score());</span>
+<span class="nc" id="L37">        }</span>
+<span class="nc" id="L38">        return records.size();</span>
+    }
+
+    /**
+     * Compute one student's final grade.
+     *
+     * @param dropLowestIn optional category (may be null) whose single lowest
+     *                     score is dropped before averaging, only if that
+     *                     category has 2 or more scores
+     * @throws NoSuchElementException if the student does not exist
+     */
+    public FinalGrade finalGrade(String studentId, Map&lt;String, Double&gt; weights, String dropLowestIn)
+            throws SQLException {
+<span class="nc" id="L51">        String name = repository.getStudentName(studentId)</span>
+<span class="nc" id="L52">                .orElseThrow(() -&gt; new NoSuchElementException(&quot;unknown student: &quot; + studentId));</span>
+<span class="nc" id="L53">        Map&lt;String, List&lt;Double&gt;&gt; scores = repository.getScores(studentId);</span>
+<span class="nc bnc" id="L54" title="All 4 branches missed.">        if (dropLowestIn != null &amp;&amp; scores.getOrDefault(dropLowestIn, List.of()).size() &gt; 1) {</span>
+<span class="nc" id="L55">            scores.put(dropLowestIn, Grading.dropLowest(scores.get(dropLowestIn), 1));</span>
+        }
+<span class="nc" id="L57">        double percent = Grading.weightedAverage(scores, weights);</span>
+<span class="nc" id="L58">        return new FinalGrade(studentId, name, percent, Grading.letterGrade(percent));</span>
+    }
+
+    /** Final grades for every student, sorted by student id. */
+    public List&lt;FinalGrade&gt; classReport(Map&lt;String, Double&gt; weights, String dropLowestIn)
+            throws SQLException {
+<span class="nc" id="L64">        List&lt;FinalGrade&gt; report = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        for (String id : repository.listStudentIds()) {</span>
+<span class="nc" id="L66">            report.add(finalGrade(id, weights, dropLowestIn));</span>
+<span class="nc" id="L67">        }</span>
+<span class="nc" id="L68">        return report;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -62,6 +62,41 @@ class GradingTest {
     }
 
     @Test
+    void letterGrade_87_returnsBplus() {
+        assertEquals("B+", Grading.letterGrade(87));
+    }
+
+    @Test
+    void letterGrade_83_returnsB() {
+        assertEquals("B", Grading.letterGrade(83));
+    }
+
+    @Test
+    void letterGrade_80_returns_Bminus() {
+        assertEquals("B-", Grading.letterGrade(80));
+    }
+
+    @Test
+    void letterGrade_77_returnsCplus() {
+        assertEquals("C+", Grading.letterGrade(77));
+    }
+
+    @Test
+    void letterGrade_73_returnsC(){
+        assertEquals("C", Grading.letterGrade(73));
+    }
+
+    @Test
+    void letterGrade_70_returnsCminus() {
+        assertEquals("C-", Grading.letterGrade(70));
+    }
+
+    @Test
+    void letterGrade_67_returnsDPlus() {
+        assertEquals("D+", Grading.letterGrade(67));
+    }
+
+    @Test
     void letterGrade_negative_throws() {
         assertThrows(IllegalArgumentException.class, () -> Grading.letterGrade( -1));
     }
@@ -186,6 +221,13 @@ class GradingTest {
         assertThrows(IllegalArgumentException.class, () -> Grading.weightedAverage(
             Map.of("labs", List.of(90.0)),
             Map.of()));
+    }
+
+    @Test
+    void weightedAverage_scoreOutOfRangeInsideCategory() {
+        assertThrows(IllegalArgumentException.class, () -> Grading.weightedAverage(
+            Map.of("labs", List.of(101.0)),
+            Map.of("labs", 1.0)));
     }
     // TODO: boundary values (exactly 93? 92.99? 0? 100?), dropLowest, gradePoints,
     //       weightedAverage, RosterLoader, StudentRepository, GradebookService ...

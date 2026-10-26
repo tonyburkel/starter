@@ -1,0 +1,7 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+gradebook,edu.mctc.gradebook,StudentRepository,157,0,8,0,38,0,12,0,8,0
+gradebook,edu.mctc.gradebook,GradebookService.FinalGrade,15,0,0,0,1,0,1,0,1,0
+gradebook,edu.mctc.gradebook,GradebookService,124,0,8,0,22,0,9,0,5,0
+gradebook,edu.mctc.gradebook,RosterLoader.ScoreRecord,15,0,0,0,1,0,1,0,1,0
+gradebook,edu.mctc.gradebook,Grading,7,498,5,47,2,82,5,29,0,8
+gradebook,edu.mctc.gradebook,RosterLoader,184,0,16,0,35,0,12,0,4,0
