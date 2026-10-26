@@ -1,11 +1,10 @@
 package edu.mctc.gradebook;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -106,12 +105,12 @@ class GradingTest {
 
     @Test
     void gradePoints_unknownLetter_throws() {
-        assertThrows(IllegalArgumentException.class, () -> Grading.letterGrade("E"));
+        assertThrows(IllegalArgumentException.class, () -> Grading.gradePoints("E"));
     }
 
     @Test
     void gradePoints_null_throwsNullPointer() {
-        assertThrows(NullPointerException.class, () -> Grading.letterGrade(null));
+        assertThrows(NullPointerException.class, () -> Grading.gradePoints(null));
     }
 
     //dropLowest
@@ -128,7 +127,7 @@ class GradingTest {
 
     @Test
     void dropLowest_keepsOriginalOrder() {
-        assertEquals(List.of(90.0, 70.0, 80.0), Grading.dropLowest(List.of(90.0, 70.0, 80.0), 1));
+        assertEquals(List.of(90.0, 80.0), Grading.dropLowest(List.of(90.0, 70.0, 80.0), 1));
     }
 
     @Test
