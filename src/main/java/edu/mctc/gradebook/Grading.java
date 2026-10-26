@@ -157,9 +157,7 @@ public final class Grading {
         return Math.round(total * 100.0) / 100.0;
     }
     public static double gpa(List<String> letters, List<Integer> credits) {
-        if(letters.isEmpty() || letters.size() != credits.size()) {
-            throw new IllegalArgumentException("letters and credits must be non-empty and equal in size");
-        }
+        checkGpaInputs(letters, credits);
 
         int totalCredits = 0;
         double weightedPoints = 0.0;
@@ -174,5 +172,10 @@ public final class Grading {
         }
 
         return weightedPoints / totalCredits;
+    }
+    private static void checkGpaInputs(List<String> letters, List<Integer> credits) {
+        if(letters.isEmpty() || letters.size() != credits.size()) {
+            throw new IllegalArgumentException("letters and credits must be non-empty and equal in size");
+        }
     }
 }
